@@ -22,6 +22,17 @@ And require it:
 
 ## Basic usage
 
+### 0. Define your translation function
+
+This library is only meant to generate and read PO files. Translating in and of itself is up to you and your favorite library.
+
+``` clojure
+(defn tr [s & args]
+  (translate-string-to-current-language s args))
+```
+
+Throughout your code this `tr` function will be used, and now Pottery will manage the gettext part.
+
 ### 1. Scan your codebase
 
 Call the scan function from the REPL:
