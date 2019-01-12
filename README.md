@@ -62,7 +62,7 @@ With those translation files generated from step 2, Pottery can scan those files
 
 ### 4. Repeat!
 
-Whenever strings change in the codebase, at will re-scan c.f. step 1. This will replace the old template file, ensuring changed strings are changed, and removed strings are removed. Then merge that new template file in the translation files from step 2. In Poedit you can achieve this by going to *Catalog -> Update from POT file*. When you save in Poedit you can also purge deleted strings from the po file via *Catalog -> Purge Deleted Translations*. You translation files are now in sync!
+Whenever strings change in the codebase, at will re-scan c.f. step 1. This will replace the old template file, ensuring changed strings are changed, and removed strings are removed. Then merge that new template file in the translation files from step 2. In Poedit you can achieve this by going to *Catalog -> Update from POT file*. After saving in Poedit you can also purge deleted strings from the po file via *Catalog -> Purge Deleted Translations*. You translation files are now in sync!
 
 ## Gettext features
 
@@ -98,7 +98,9 @@ The output after parsing a PO file:
 {["One horse" "%s horses"] ["Een paard" "%s paarden"]}
 ```
 
-### Context _NOT IMPLEMENTED_
+### Context
+
+_Not implemented yet_
 
 Sometimes the same string can have multiple translations according to context. Gettext has support for this as a translation context. This has not been implemented yet, please submit an issue if the need arises.
 
@@ -115,15 +117,72 @@ These translations will be extracted and added to the template file. At translat
 
 TODO: screenshot.
 
+## Configuration / Extra features
+
+### 1. Scanning
+
+The scan function takes a few options:
+
+| Key            | Description                                                                  | Default                            |
+|:---------------|:-----------------------------------------------------------------------------|------------------------------------|
+| :dir           | The source directory which needs to be scanned                               | `"src"`                            |
+| :template-file | The output template file                                                     | `"resources/gettext/template.pot"` |
+| :extract-fn    | The function which maps any expression found to a string, strings or nothing | `pottery.scan/default-extractor`   |
+
 #### Extract fn
 
-The default extractor works as follows:
+A function which takes a clojure expression as data, and returns a string (single) or a vector of strings (plural).
+
+A simple extractor would look like this:
 
 ``` clojure
-(tr ["My string" & args])                => "My string"
-(trn ["Singular" "Plural" & args] count) => ["Singular" "Plural"]
+(defn my-extract-fn [expr]
+  (when (and (list? expr)
+             (= 'tr (first expr))
+             (string? (second expr)))
+    (second expr)))
+
+(my-extract-fn '(tr "Some string")) => "Some string"
+(my-extract-fn '(inc 12)) => nil
 ```
 
+It may get tedious to write a good function when you have multiple translation functions that have multiple arities. Pottery offers a shorthand using (core.match)[https://github.com/clojure/core.match] to declare patterns in which translation functions are called.
+
+``` clojure
+(pottery/make-extractor
+  ['tr s & _] s
+  ['tr [s & _]] s
+  ['trn [s1 s2 & _]] [s1 s2]
+  ...)
+```
+
+It's a good idea to also warn when extraction did not pass any of the patterns, as a safe guard. As last pattern of the match sequence, you can provide:
+
+``` clojure
+(pottery/make-extractor
+  ... patterns
+  [(:or 'tr 'trn) & _] (pottery.scan/extraction-warning
+                         "Translation function called but not string could be extracted:"))
+```
+
+When the expression starts with the familiar function call, but did not match any pattern the warning will be printed with the failing expression. It's a good idea to write patterns for common "mistakes".
+
+The default extractor is defined as such:
+
+``` clojure
+(make-extractor
+   ['tr s & _] s
+   ['trn [s1 s2 & _] _] [s1 s2]
+   [(:or 'tr 'trn) & _] (extraction-warning
+                         "Could not extrapolate translation string for the form:"))
+```
+
+It's a very simple extractor, which will match these clojure forms:
+
+``` clojure
+(tr "My string" & args)                  => "My string"
+(trn ["Singular" "Plural" & args] count) => ["Singular" "Plural"]
+```
 
 ## License
 
