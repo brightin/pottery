@@ -1,0 +1,9 @@
+#: reference.cljs
+msgid ""
+"First-line"
+"\n"
+"Second-line"
+msgstr ""
+"Eerste regel"
+"\n"
+"Tweede regel"

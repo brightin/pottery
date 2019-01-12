@@ -1,0 +1,5 @@
+#: reference.cljs
+msgid "one mouse"
+msgid_plural "%1 mice"
+msgstr[0] "een muis"
+msgstr[1] "muizen"
