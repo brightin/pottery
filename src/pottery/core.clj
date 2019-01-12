@@ -12,11 +12,10 @@
   "Returns an extraction function using the core.match pattern syntax.
 
   Example:
-  ```
-  (make-extractor
-    ['tr s] s
-    ['trn [s1 s2] _] [s1 s2])
-  ```"
+
+    (make-extractor
+      ['tr s] s
+      ['trn [s1 s2] _] [s1 s2]) "
   [& args]
   `(scan/make-extractor ~@args))
 

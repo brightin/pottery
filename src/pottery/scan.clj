@@ -34,9 +34,7 @@
 
 (def default-extractor
   (make-extractor
-   ['tr _ [s & _]] s
-   ['tr [s & _]] s
-   ['trn _ [s1 s2 & _] _] [s1 s2]
+   ['tr s & _] s
    ['trn [s1 s2 & _] _] [s1 s2]
    [(:or 'tr 'trn) & _] (extraction-warning
                          "Could not extrapolate translation string for the form:")))
