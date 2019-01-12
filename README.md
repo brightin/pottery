@@ -33,7 +33,7 @@ And require it:
 
 ### 0. Define your translation function
 
-This library is only meant to generate and read PO files. Translating in and of itself is up to you. There are plenty of great libraries out there for this with which Pottery has no intentionns to compete.
+This library is only meant to generate and read PO files. Translating in and of itself is up to you. There are plenty of great libraries out there for this with which Pottery has no intention to compete.
 
 ``` clojure
 (defn tr [s & args]
@@ -62,10 +62,10 @@ For every string in the codebase there needs to be a translation to other langua
 
 ### 3. Parse the translation files
 
-With those translation files generated from step 2, Pottery can scan those files into a map from `{"Original String" "Translated string"}`.
+Pottery can scan the translation files from step 2 into a dictionary with the form: `{"Original String" "Translated string"}`.
 
 ``` clojure
-(pottery/read-po-file (io/resource "gettext/ES-es.po"))
+(pottery/read-po-file (io/resource "gettext/es.po"))
 => {"Hello" "Hola"}
 ```
 
@@ -73,7 +73,7 @@ These can act as dictionaries for you translation function in step 0.
 
 ### 4. Repeat!
 
-Whenever strings change in the codebase, at will re-scan c.f. step 1. This will replace the old template file, ensuring changed strings are changed, and removed strings are removed. Then merge that new template file in the translation files from step 2. In Poedit you can achieve this by going to *Catalog -> Update from POT file*. After saving in Poedit you can also purge deleted strings from the po file via *Catalog -> Purge Deleted Translations*. You translation files are now in sync!
+Whenever strings change in the codebase, re-scan at will as in step 1. This will replace the old template file, ensuring changed strings are changed, and removed strings are removed. Next merge that new template file in the translation files from step 2. In Poedit you can achieve this by going to *Catalog -> Update from POT file*. After saving in Poedit you can also purge deleted strings from the po file via *Catalog -> Purge Deleted Translations*. You translation files are now in sync!
 
 ## Gettext features
 
@@ -186,7 +186,7 @@ The default extractor is defined as such:
                          "Could not extrapolate translation string for the form:"))
 ```
 
-It's a very simple extractor, which will match these clojure forms:
+It's a minimal extractor, which will match these clojure forms:
 
 ``` clojure
 (tr "My string" & args)                  => "My string"
@@ -194,9 +194,18 @@ It's a very simple extractor, which will match these clojure forms:
 (trn ["String"])                         => nil ;; And a warning is printed
 ```
 
+Full example:
+
+``` clojure
+(pottery/scan-codebase!
+  {:dir "src"
+   :template-file (io/file "path/to/template.pot")
+   :extract-fn (pottery/make-extractor ['tr s & _] s)})
+```
+
 ## Gotchas
 
-With Pottery, translation is done as a function but should be regarded as data. The scanner reads source code with the clojure reader to figure out which strings are to be translated. For example:
+With Pottery, translation is done as a function but the function call should be regarded as data. The scanner reads source code with the clojure reader to figure out which strings are to be translated. For example:
 
 ``` clojure
 ;; Bad
