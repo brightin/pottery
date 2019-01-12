@@ -79,6 +79,6 @@
   (->>
    (get-files (java.io.File. dir))
    (map read-file)
-   (map (partial find-tr-strings (or extract-fn default-extractor)))
+   (map (partial find-tr-strings extract-fn))
    (filter (comp seq ::expressions))
    (sort-by ::filename)))
