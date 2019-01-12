@@ -24,7 +24,7 @@ And require it:
 
 ### 0. Define your translation function
 
-This library is only meant to generate and read PO files. Translating in and of itself is up to you and your favorite library.
+This library is only meant to generate and read PO files. Translating in and of itself is up to you and your. There are plenty of great libraries out there for this with which Pottery has no intentionns to compete.
 
 ``` clojure
 (defn tr [s & args]
@@ -56,9 +56,11 @@ TODO: screenshot
 With those translation files generated from step 2, Pottery can scan those files into a map from `{"Original String" "Translated string"}`.
 
 ``` clojure
-(pottery/read-po-file (io/resource "gettext/<lang>.po"))
-=> {"Original string" "Translated string in <lang>"}
+(pottery/read-po-file (io/resource "gettext/ES-es.po"))
+=> {"Hello" "Hola"}
 ```
+
+These can act as dictionaries for you translation function in step 0.
 
 ### 4. Repeat!
 
@@ -68,7 +70,7 @@ Whenever strings change in the codebase, at will re-scan c.f. step 1. This will 
 
 This library supports most features that gettext supports. More will be added at request, feel free to create an issue for them.
 
-See "Extra features" below on how to configure the scanner to work with your project. The defaults are such that:
+See [Configuration / Extra features](#configuration--extra-features) below on how to configure the scanner to work with your project. The defaults are such that:
 
 ### Simple string
 
@@ -129,7 +131,7 @@ The scan function takes a few options:
 | :template-file | The output template file                                                     | `"resources/gettext/template.pot"` |
 | :extract-fn    | The function which maps any expression found to a string, strings or nothing | `pottery.scan/default-extractor`   |
 
-#### Extract fn
+#### extract-fn
 
 A function which takes a clojure expression as data, and returns a string (single) or a vector of strings (plural).
 
@@ -146,7 +148,7 @@ A simple extractor would look like this:
 (my-extract-fn '(inc 12)) => nil
 ```
 
-It may get tedious to write a good function when you have multiple translation functions that have multiple arities. Pottery offers a shorthand using (core.match)[https://github.com/clojure/core.match] to declare patterns in which translation functions are called.
+It may get tedious to write a good function when you have multiple translation functions that have multiple arities. Pottery offers a shorthand using [core.match](https://github.com/clojure/core.match) to declare patterns in which translation functions are called.
 
 ``` clojure
 (pottery/make-extractor
@@ -182,7 +184,25 @@ It's a very simple extractor, which will match these clojure forms:
 ``` clojure
 (tr "My string" & args)                  => "My string"
 (trn ["Singular" "Plural" & args] count) => ["Singular" "Plural"]
+(trn ["String"])                         => nil ;; And a warning is printed
 ```
+
+## Gotchas
+
+With Pottery, translation is done as a function but should be regarded as data. The scanner reads source code with the clojure reader to figure out which strings are to be translated. For example:
+
+``` clojure
+;; Bad
+(let [msg (if available? "Available" "Unavailable")]
+  (tr msg))
+
+;; Good
+(if available?
+  (tr "Available")
+  (tr "Unavailable"))
+```
+
+In the first case only "msg" or nothing would get extracted. In the second case all strings are extracted.
 
 ## License
 
