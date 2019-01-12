@@ -58,7 +58,7 @@ See below for more configurations of the scanner.
 
 For every string in the codebase there needs to be a translation to other languages. These get written in `<lang>.po` files. There are various tools available to achieve this. The most popular and recomended one would the free GUI tool [Poedit](https://poedit.net/). Use Poedit to load the PO template file and generate the translation files, and interactively translate all the strings.
 
-TODO: screenshot
+![Poedit](/github/poedit.png?raw=true "Poedit GUI")
 
 ### 3. Parse the translation files
 
@@ -126,7 +126,7 @@ Translator notes are great to provide context for the string to be translated. S
 
 These translations will be extracted and added to the template file. At translation time these will be visible in, for example, Poedit:
 
-TODO: screenshot.
+![Poedit translator notes](/github/poedit_translator_notes.png?raw=true "Poedit translator notes")
 
 ## Configuration / Extra features
 
