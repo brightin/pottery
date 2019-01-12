@@ -23,14 +23,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Extraction
 
-(defn warn-extract! [expression]
-  (println "Could not extrapolate translation string for the form: " expression))
-
 (defmacro make-extractor [& match-patterns]
   `(fn extract-fn# [expr#]
      (match (vec expr#)
        ~@match-patterns
        :else nil)))
+
+(defn extraction-warning [msg]
+  {::warning msg})
 
 (def default-extractor
   (make-extractor
@@ -38,7 +38,8 @@
    ['tr [s & _]] s
    ['trn _ [s1 s2 & _] _] [s1 s2]
    ['trn [s1 s2 & _] _] [s1 s2]
-   [(:or 'tr 'trn) & _] ::warning))
+   [(:or 'tr 'trn) & _] (extraction-warning
+                         "Could not extrapolate translation string for the form:")))
 
 (defn- with-comment [expression text]
   (if-let [notes (:notes (meta expression))]
@@ -56,8 +57,8 @@
     `(trn [\"One item\" \"%1 items\"] n)`"
   [extract-fn expr]
   (when-let [val (and (seq? expr) (extract-fn expr))]
-    (if (= val ::warning)
-      (warn-extract! expr)
+    (if-let [warning (::warning val)]
+      (println warning expr)
       (with-comment expr val))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
