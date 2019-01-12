@@ -4,7 +4,16 @@ A library to use [GNU Gettext](https://www.gnu.org/software/gettext/) as transla
 
 ## Why Gettext
 
-TODO
+Gettext is an old but great solution for managing translatable codebases. In comparison to the i18n or similar ways:
+
+- No need to invent unique keys anymore for every piece of text that needs translations. The string itself is the key.
+- Codebase and translation files stay in sync via tooling, not developpers. Since the string is the key, if the string changes, translations must follow.
+- Deffered development time vs translation time. When developing you don't want to have to manage localisation files. Gettext defers this process to a more appropriate time, like before releases for example. The developper just has to write text in the codebase in whatever language the team is comfortable with.
+- Outsource translations easily to professional translators. PO and POT files are an industry standard for translation bureaus.
+
+## Why make this library
+
+There are some libraries in the wild that do some parts of what Pottery tries to achieve. However most of them either had an incomplete API, or not a functional one. Pottery is a functional approach to using gettext, leaving the developer in the front seat when translating his or her application.
 
 ## Installation
 
