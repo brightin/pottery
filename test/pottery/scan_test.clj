@@ -1,6 +1,6 @@
 (ns pottery.scan-test
   (:require [pottery.scan :as sut]
-            [clojure.test :refer [deftest is are]]))
+            [clojure.test :refer [deftest testing is are]]))
 
 (def extract (partial sut/extract sut/default-extractor))
 
@@ -36,5 +36,10 @@
   (let [extractor (sut/make-extractor
                    [tr s] s
                    [trn [s1 s2] _] [s1 s2])]
-    (is (= "string" (extractor '(tr "string"))))
-    (is (= ["string1" "string2"] (extractor '(trn ["string1" "string2"] 1))))))
+
+    (testing "finds matches when any"
+      (is (= "string" (extractor '(tr "string"))))
+      (is (= ["string1" "string2"] (extractor '(trn ["string1" "string2"] 1)))))
+
+    (testing "defaults to nil when no match"
+      (is (= nil (extractor (quote (def foo :bar))))))))

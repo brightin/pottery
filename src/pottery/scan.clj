@@ -28,7 +28,9 @@
 
 (defmacro make-extractor [& match-patterns]
   `(fn extract-fn# [expr#]
-     (match (vec expr#) ~@match-patterns)))
+     (match (vec expr#)
+       ~@match-patterns
+       :else nil)))
 
 (def default-extractor
   (make-extractor
@@ -36,8 +38,7 @@
    ['tr [s & _]] s
    ['trn _ [s1 s2 & _] _] [s1 s2]
    ['trn [s1 s2 & _] _] [s1 s2]
-   [(:or 'tr 'trn) & _] ::warning
-   :else nil))
+   [(:or 'tr 'trn) & _] ::warning))
 
 (defn- with-comment [expression text]
   (if-let [notes (:notes (meta expression))]
