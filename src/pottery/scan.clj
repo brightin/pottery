@@ -4,6 +4,9 @@
             [clojure.java.io :as io]
             [clojure.string :as str]))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Files
+
 (defn- source-file? [file]
   (some #(re-find (re-pattern (str "." % "$")) (.getName file))
         ["clj" "cljc" "cljs"]))
@@ -17,8 +20,24 @@
    (read-string {:read-cond :preserve}
                 (format "(%s)" (str/replace (slurp file) #"::" ":")))})
 
-(defn- warn-extract! [expression]
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Extraction
+
+(defn warn-extract! [expression]
   (println "Could not extrapolate translation string for the form: " expression))
+
+(defmacro make-extractor [& match-patterns]
+  `(fn extract-fn# [expr#]
+     (match (vec expr#) ~@match-patterns)))
+
+(def default-extractor
+  (make-extractor
+   ['tr _ [s & _]] s
+   ['tr [s & _]] s
+   ['trn _ [s1 s2 & _] _] [s1 s2]
+   ['trn [s1 s2 & _] _] [s1 s2]
+   [(:or 'tr 'trn) & _] ::warning
+   :else nil))
 
 (defn- with-comment [expression text]
   (if-let [notes (:notes (meta expression))]
@@ -34,30 +53,30 @@
 
     `(trn i18n [\"One item\" \"%1 items\"] n)` or
     `(trn [\"One item\" \"%1 items\"] n)`"
-  [expr]
-  (when (seq? expr)
-    (when-let [val (match (vec expr)
-                     ['tr _ [s & _]] s
-                     ['tr [s & _]] s
-                     ['trn _ [s1 s2 & _] _] [s1 s2]
-                     ['trn [s1 s2 & _] _] [s1 s2]
-                     [(:or 'tr 'trn) & _] (warn-extract! expr)
-                     :else nil)]
+  [extract-fn expr]
+  (when-let [val (and (seq? expr) (extract-fn expr))]
+    (if (= val ::warning)
+      (warn-extract! expr)
       (with-comment expr val))))
 
-(defn- find-tr-strings* [expressions]
-  (distinct (remove nil? (map extract (tree-seq coll? identity expressions)))))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Scanning
 
-(def find-tr-strings #(update % ::expressions find-tr-strings*))
+(defn- find-tr-strings* [extract-fn expressions]
+  (->> (map (partial extract extract-fn) (tree-seq coll? identity expressions))
+       (remove nil?)
+       distinct))
+
+(def find-tr-strings #(update %2 ::expressions (partial find-tr-strings* %1)))
 
 (defn scan-files
   "Walk the given directory and for every clj, cljc or cljs file
   extract the strings for which the extractor returns a value. "
-  [dir]
+  [{:keys [dir extract-fn]}]
   (println "Scanning files...")
   (->>
    (get-files (java.io.File. dir))
    (map read-file)
-   (map find-tr-strings)
+   (map (partial find-tr-strings (or extract-fn default-extractor)))
    (filter (comp seq ::expressions))
    (sort-by ::filename)))
