@@ -1,6 +1,6 @@
 # Pottery
 
-A library to use [GNU Gettext](https://www.gnu.org/software/gettext/) as translation solution for clojure projects. This small library is meant to extract translatable strings from your codebase, generate a PO Template file and parsing PO (translation) files.
+A library to use [GNU Gettext](https://www.gnu.org/software/gettext/) as translation solution for clojure projects. This library is meant to extract translatable strings from your codebase, generate a PO Template file and parsing PO (translation) files.
 
 ## Why Gettext
 
@@ -33,7 +33,7 @@ And require it:
 
 ### 0. Define your translation function
 
-This library is only meant to generate and read PO files. Translating in and of itself is up to you and your. There are plenty of great libraries out there for this with which Pottery has no intentionns to compete.
+This library is only meant to generate and read PO files. Translating in and of itself is up to you. There are plenty of great libraries out there for this with which Pottery has no intentionns to compete.
 
 ``` clojure
 (defn tr [s & args]
@@ -52,11 +52,11 @@ Call the scan function from the REPL:
 
 This will scan the codebase for any translatable strings and write the PO template file to `resources/gettext/template.pot`.
 
-See below for more configurations of the scanner.
+See [Configuration / Extra features](#configuration--extra-features) for more configurations of the scanner.
 
 ### 2. Use tools to generate translation files
 
-For every string in the codebase there needs to be a translation to other languages. These get written in `<lang>.po` files. There are various tools available to achieve this. The most popular and recomended one would the free GUI tool [Poedit](https://poedit.net/). Use Poedit to load the PO template file and generate the translation files, and interactively translate all the strings.
+For every string in the codebase there needs to be a translation to other languages. These get written in `<lang>.po` files. There are various tools available to achieve this. The most popular and recomended one would the free GUI tool [Poedit](https://poedit.net/). Use Poedit to load the PO template file, generate the translation files and interactively translate all the strings.
 
 ![Poedit](/github/poedit.png?raw=true "Poedit GUI")
 
@@ -77,9 +77,7 @@ Whenever strings change in the codebase, at will re-scan c.f. step 1. This will 
 
 ## Gettext features
 
-This library supports most features that gettext supports. More will be added at request, feel free to create an issue for them.
-
-See [Configuration / Extra features](#configuration--extra-features) below on how to configure the scanner to work with your project. The defaults are such that:
+This library supports most features that gettext supports. More will be added at request, feel free to create an issue for them. The following examples use the default scanner:
 
 ### Simple string
 
