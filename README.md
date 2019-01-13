@@ -1,6 +1,6 @@
 # Pottery
 
-A library to use [GNU Gettext](https://www.gnu.org/software/gettext/) as translation solution for clojure projects. This library is meant to extract translatable strings from your codebase, generate a PO Template file and parsing PO (translation) files.
+A library to use [GNU Gettext](https://www.gnu.org/software/gettext/) as translation solution for clojure projects. This library is meant to extract translatable strings from your codebase (clj, cljs and cljc), generate a PO Template file and parsing PO (translation) files.
 
 ## Why Gettext
 
@@ -51,7 +51,7 @@ Call the scan function from the REPL:
 (pottery/scan-codebase!)
 ```
 
-This will scan the codebase for any translatable strings and write the PO template file to `resources/gettext/template.pot`.
+This will scan the codebase for any translatable strings and write the PO template file to `resources/gettext/template.pot`. This is not limited to clojure only files, strings in .cljc and .cljs files are also extracted.
 
 See [Configuration / Extra features](#configuration--extra-features) for more configurations of the scanner.
 
