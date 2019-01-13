@@ -160,7 +160,7 @@ It may get tedious to write a good function when you have multiple translation f
 
 ``` clojure
 (pottery/make-extractor
-  ['tr s & _] s
+  ['tr (s :guard string?) & _] s
   ['tr [s & _]] s
   ['trn [s1 s2 & _]] [s1 s2]
   ...)
@@ -214,6 +214,10 @@ With Pottery, translation is done as a function but the function call should be 
 ```
 
 In the first case only "msg" or nothing would get extracted. In the second case all strings are extracted.
+
+## Credits
+
+Thanks to @skuro for coming up with the name of this project!
 
 ## License
 
