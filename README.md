@@ -217,7 +217,7 @@ In the first case only "msg" or nothing would get extracted. In the second case 
 
 ## Credits
 
-Thanks to @skuro for coming up with the name of this project!
+Thanks to [Carlo Sciolla](https://github.com/skuro) for coming up with the name of this project!
 
 ## License
 
