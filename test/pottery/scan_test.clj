@@ -8,7 +8,11 @@
       '(tr "Hello") "Hello"
       '(tr "Hello %s" arg1) "Hello %s"
       '(trn ["One" "Many"] 1) ["One" "Many"]
-      '(trn ["One %s" "Many %s" arg1] 3) ["One %s" "Many %s"]))
+      '(trn ["One %s" "Many %s" arg1] 3) ["One %s" "Many %s"])
+
+    (testing "Default extractor string guards"
+      (is (nil? (sut/extract sut/default-extractor '(tr :key))))
+      (is (nil? (sut/extract sut/default-extractor '(trn [:key1 :key2] 1))))))
 
   (testing "Advanced extractor"
 

@@ -171,7 +171,7 @@ It's a good idea to also warn when extraction did not pass any of the patterns, 
 (pottery/make-extractor
   ... patterns
   [(:or 'tr 'trn) & _] (pottery.scan/extraction-warning
-                         "Translation function called but not string could be extracted:"))
+                         "Translation function called but no string could be extracted:"))
 ```
 
 When the expression starts with the familiar function call, but did not match any pattern the warning will be printed with the failing expression. It's a good idea to write patterns for common "mistakes".
@@ -180,8 +180,8 @@ The default extractor is defined as such:
 
 ``` clojure
 (make-extractor
-   ['tr s & _] s
-   ['trn [s1 s2 & _] _] [s1 s2]
+   ['tr (s :guard string?) & _] s
+   ['trn [(s1 :guard string?) (s2 :guard string?) & _] _] [s1 s2]
    [(:or 'tr 'trn) & _] (extraction-warning
                          "Could not extrapolate translation string for the form:"))
 ```
@@ -191,10 +191,11 @@ It's a minimal extractor, which will match these clojure forms:
 ``` clojure
 (tr "My string" & args)                  => "My string"
 (trn ["Singular" "Plural" & args] count) => ["Singular" "Plural"]
+(tr some-var)                            => nil ;; And a warning is printed
 (trn ["String"])                         => nil ;; And a warning is printed
 ```
 
-Full example:
+#### Full scan example:
 
 ``` clojure
 (pottery/scan-codebase!
