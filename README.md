@@ -7,8 +7,8 @@ A library to use [GNU Gettext](https://www.gnu.org/software/gettext/) as transla
 Gettext is an old but great solution for managing translatable codebases. In comparison to the i18n or similar ways:
 
 - No need to invent unique keys anymore for every piece of text that needs translations. The string itself is the key.
-- Codebase and translation files stay in sync via tooling, not developpers. Since the string is the key, if the string changes, translations must follow.
-- Deffered development time vs translation time. When developing you don't want to have to manage localisation files. Gettext defers this process to a more appropriate time, like before releases for example. The developper just has to write text in the codebase in whatever language the team is comfortable with.
+- Codebase and translation files stay in sync via tooling, not developers. Since the string is the key, if the string changes, translations must follow.
+- Defered development time vs translation time. When developing you don't want to have to manage localisation files. Gettext defers this process to a more appropriate time, like before releases for example. The developer just has to write text in the codebase in whatever language the team is comfortable with.
 - Outsource translations easily to professional translators. PO and POT files are an industry standard for translation bureaus.
 
 ## Why make this library
