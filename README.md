@@ -33,7 +33,8 @@ And require it:
 
 ### 0. Define your translation function
 
-This library is only meant to generate and read PO files. Translating in and of itself is up to you. There are plenty of great libraries out there for this with which Pottery has no intention to compete.
+This library is only meant to generate and read PO files. Translating in and of itself is up to you. There are plenty of great libraries out there for this with which Pottery has no intention to compete. There is a [full example](https://github.com/brightin/pottery/tree/master/examples/example.clj) to demonstrate how this could work.
+
 
 ``` clojure
 (defn tr [s & args]
@@ -195,14 +196,7 @@ It's a minimal extractor, which will match these clojure forms:
 (trn ["String"])                         => nil ;; And a warning is printed
 ```
 
-#### Full scan example:
-
-``` clojure
-(pottery/scan-codebase!
-  {:dir "src"
-   :template-file (io/file "path/to/template.pot")
-   :extract-fn (pottery/make-extractor ['tr s & _] s)})
-```
+See [the full example](https://github.com/brightin/pottery/tree/master/examples/example.clj) for a simple but complete example of integrating Pottery in your application.
 
 ## Gotchas
 
