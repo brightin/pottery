@@ -33,7 +33,7 @@ And require it:
 
 ### 0. Define your translation function
 
-This library is only meant to generate and read PO files. Translating in and of itself is up to you. There are plenty of great libraries out there for this with which Pottery has no intention to compete. There is a [full example](https://github.com/brightin/pottery/tree/master/examples/example.clj) to demonstrate how this could work.
+This library is only meant to generate and read PO files. Translating in and of itself is up to you. There are plenty of great libraries out there for this with which Pottery has no intention to compete. There is a [full example](https://github.com/brightin/pottery/tree/master/examples/simple/example.clj) to demonstrate how this could work.
 
 
 ``` clojure
@@ -63,18 +63,18 @@ For every string in the codebase there needs to be a translation to other langua
 
 ### 3. Parse the translation files
 
-Pottery can scan the translation files from step 2 into a dictionary with the form: `{"Original String" "Translated string"}`.
+Pottery parses the translation files from step 2 into a dictionary with the form: `{"Original String" "Translated string"}`.
 
 ``` clojure
 (pottery/read-po-file (io/resource "gettext/es.po"))
 => {"Hello" "Hola"}
 ```
 
-These can act as dictionaries for you translation function in step 0.
+These can act as dictionaries for your translation function in step 0.
 
 ### 4. Repeat!
 
-Whenever strings change in the codebase, re-scan at will as in step 1. This will replace the old template file, ensuring changed strings are changed, and removed strings are removed. Next merge that new template file in the translation files from step 2. In Poedit you can achieve this by going to *Catalog -> Update from POT file*. After saving in Poedit you can also purge deleted strings from the po file via *Catalog -> Purge Deleted Translations*. You translation files are now in sync!
+Whenever strings change in the codebase, re-scan at will as in step 1. This will replace the old template file, ensuring changed strings are changed, and removed strings are removed. Next merge that new template file in the translation files. In Poedit you can achieve this by going to *Catalog -> Update from POT file*. After saving in Poedit you can also purge deleted strings from the po file via *Catalog -> Purge Deleted Translations*. You translation files are now in sync!
 
 ## Gettext features
 
@@ -196,7 +196,7 @@ It's a minimal extractor, which will match these clojure forms:
 (trn ["String"])                         => nil ;; And a warning is printed
 ```
 
-See [the full example](https://github.com/brightin/pottery/tree/master/examples/example.clj) for a simple but complete example of integrating Pottery in your application.
+See [the full example](https://github.com/brightin/pottery/tree/master/examples/simple/example.clj) for a simple but complete example of integrating Pottery in your application.
 
 ## Gotchas
 

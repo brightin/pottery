@@ -1,16 +1,16 @@
-#: examples/example.clj
+#: examples/simple/example.clj
 msgid "Greetings"
 msgstr ""
 
-#: examples/example.clj
+#: examples/simple/example.clj
 msgid "Please confirm your email"
 msgstr ""
 
-#: examples/example.clj
+#: examples/simple/example.clj
 msgid "Welcome, %s!"
 msgstr ""
 
-#: examples/example.clj
+#: examples/simple/example.clj
 msgid "product"
 msgid_plural "%s products"
 msgstr[0] ""

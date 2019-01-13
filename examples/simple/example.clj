@@ -1,10 +1,10 @@
-(ns example.example
+(ns simple.example
   (:require [pottery.core :as pottery]
             [clojure.java.io :as io]))
 
 (def DICT
-  {:nl (pottery/read-po-file (io/file "examples/gettext/nl.po"))
-   :fr (pottery/read-po-file (io/file "examples/gettext/fr.po"))})
+  {:nl (pottery/read-po-file (io/file "examples/simple/gettext/nl.po"))
+   :fr (pottery/read-po-file (io/file "examples/simple/gettext/fr.po"))})
 
 (defn tr [lang s & args]
   (let [string (or (get-in DICT [lang s]) s)]
@@ -19,8 +19,8 @@
 ;; Useful to have this in a dev user namespace
 (defn gettext-do-scan! []
   (pottery/scan-codebase!
-   {:dir "examples"
-    :template-file (io/file "examples/gettext/template.pot")
+   {:dir "examples/simple"
+    :template-file (io/file "examples/simple/gettext/template.pot")
     :extract-fn (pottery/make-extractor ;; We use the lang as first argument to tr and trn.
                  ['tr _ (s :guard string?) & _] s
                  ['trn _ [(s1 :guard string?) (s2 :guard string?)] & _] [s1 s2]

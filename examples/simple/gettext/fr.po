@@ -12,19 +12,19 @@ msgstr ""
 "X-Generator: Poedit 2.2\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: examples/example.clj
+#: examples/simple/example.clj
 msgid "Greetings"
 msgstr "Bonjour"
 
-#: examples/example.clj
+#: examples/simple/example.clj
 msgid "Please confirm your email"
 msgstr "Veuillez confirmer votre email"
 
-#: examples/example.clj
+#: examples/simple/example.clj
 msgid "Welcome, %s!"
 msgstr "Bienvenue, %s!"
 
-#: examples/example.clj
+#: examples/simple/example.clj
 msgid "product"
 msgid_plural "%s products"
 msgstr[0] "produit"
