@@ -3,9 +3,9 @@
             [pottery.scan :as scan]
             [clojure.java.io :as io]))
 
-(def ^:private DEFAULT_OPTS
+(defn- default-scan-options []
   {:dir "src"
-   :extract-fn scan/default-extractor
+   :extract-fn #'scan/default-extractor
    :template-file (io/file "resources/gettext/template.pot")})
 
 (defmacro make-extractor
@@ -33,7 +33,7 @@
   All of these options have defaults."
   ([] (scan-codebase! {}))
   ([opts]
-   (let [{:keys [template-file] :as opts} (merge DEFAULT_OPTS opts)]
+   (let [{:keys [template-file] :as opts} (merge (default-scan-options) opts)]
      (io/make-parents template-file)
      (->> (scan/scan-files opts)
           (po/gen-template)
