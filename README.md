@@ -1,5 +1,7 @@
 # Pottery
 
+[![Clojars Project](https://img.shields.io/clojars/v/brightin/pottery.svg)](https://clojars.org/brightin/pottery)
+
 A library to use [GNU Gettext](https://www.gnu.org/software/gettext/) as translation solution for clojure projects. This library is meant to extract translatable strings from your codebase (clj, cljs and cljc), generate a PO Template file and parsing PO (translation) files.
 
 ## Why Gettext
@@ -20,7 +22,7 @@ There are some libraries in the wild that do some parts of what Pottery tries to
 Add this dependency to your project:
 
 ```clojure
-[brightin/pottery "0.0.1"]
+[brightin/pottery "0.0.2"]
 ```
 
 And require it:

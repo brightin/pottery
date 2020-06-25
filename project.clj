@@ -1,4 +1,4 @@
-(defproject brightin/pottery "0.0.1"
+(defproject brightin/pottery "0.0.2"
   :description "A clojure library to interact with gettext and PO/POT files"
   :url "https://www.github.com/brightin/pottery"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
