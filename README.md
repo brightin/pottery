@@ -197,6 +197,46 @@ It's a minimal extractor, which will match these clojure forms:
 
 See [the full example](https://github.com/brightin/pottery/tree/master/examples/simple/example.clj) for a simple but complete example of integrating Pottery in your application.
 
+## Clojurescript usage example
+
+This next example shows an approach for compiling dictionaries into the
+clojurescript source. We use a macro to read the po file and compile the
+translation dictionary at compile time, which will result in the dictionary
+being hardcoded in the source.
+
+```clojure
+;; src/app/tr.clj
+(ns app.tr
+  (:require [pottery.po :as po]))
+
+(defmacro inline-dict [filename]
+  (po/read-po-file filename))
+
+;; src/app/frontend/tr.cljs
+(ns app.frontend.tr
+  (:require-macros [app.tr :refer [inline-dict]]))
+
+(def DICT
+  {:en (inline-dict "gettext/en.po")
+   :it (inline-dict "gettext/it.po")})
+```
+
+### Automatic recompilation with shadow-cljs
+
+If you're using [shadow-cljs](https://github.com/thheller/shadow-cljs) you can
+leverage `shadow.resource/slurp-resource` to read the contents of the PO file
+and also record the file as a recompilation dependency.
+
+```clojure
+;; src/app/tr.clj
+(ns app.tr
+  (:require [pottery.po :as po]
+            [shadow.resource :as res]))
+
+(defmacro inline-dict [filename]
+  (po/read-po-str (res/slurp-resource &env filename)))
+```
+
 ## Gotchas
 
 With Pottery, translation is done as a function but the function call should be regarded as data. The scanner reads source code with the clojure reader to figure out which strings are to be translated. For example:
