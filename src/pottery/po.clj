@@ -95,9 +95,12 @@
      [(::msgstr block) (::msgstr-plural block)]]
     [(::msgid block) (::msgstr block)]))
 
-(defn read-po-file [file]
-  (->> (str/split (slurp file) #"\n\n")
+(defn read-po-str [s]
+  (->> (str/split s #"\n\n")
        (drop 1) ;; Header meta data
        (map parse-block)
        (map ->kv)
        (into {})))
+
+(defn read-po-file [file]
+  (read-po-str (slurp file)))
