@@ -22,7 +22,7 @@ There are some libraries in the wild that do some parts of what Pottery tries to
 Add this dependency to your project:
 
 ```clojure
-[brightin/pottery "0.0.2"]
+[brightin/pottery "0.0.3"]
 ```
 
 And require it:
