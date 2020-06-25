@@ -260,15 +260,8 @@ Thanks to [Carlo Sciolla](https://github.com/skuro) for coming up with the name 
 
 ## License
 
-Copyright © 2019 Brightin
+Copyright © 2020 Brightin
 
-This program and the accompanying materials are made available under the
-terms of the Eclipse Public License 2.0 which is available at
-http://www.eclipse.org/legal/epl-2.0.
-
-This Source Code may also be made available under the following Secondary
-Licenses when the conditions for such availability set forth in the Eclipse
-Public License, v. 2.0 are satisfied: GNU General Public License as published by
-the Free Software Foundation, either version 2 of the License, or (at your
-option) any later version, with the GNU Classpath Exception which is available
-at https://www.gnu.org/software/classpath/license.html.
+This project uses the [Hippocratic License](https://firstdonoharm.dev/), and is
+thus freely available to use for purposes that do not infringe on the United
+Nations Universal Declaration of Human Rights.
