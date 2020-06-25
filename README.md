@@ -209,10 +209,10 @@ being hardcoded in the source.
 ```clojure
 ;; src/app/tr.clj
 (ns app.tr
-  (:require [pottery.po :as po]))
+  (:require [pottery.core :as pottery]))
 
 (defmacro inline-dict [filename]
-  (po/read-po-file filename))
+  (pottery/read-po-file filename))
 
 ;; src/app/frontend/tr.cljs
 (ns app.frontend.tr
@@ -232,11 +232,11 @@ and also record the file as a recompilation dependency.
 ```clojure
 ;; src/app/tr.clj
 (ns app.tr
-  (:require [pottery.po :as po]
+  (:require [pottery.core :as pottery]
             [shadow.resource :as res]))
 
 (defmacro inline-dict [filename]
-  (po/read-po-str (res/slurp-resource &env filename)))
+  (pottery/read-po-str (res/slurp-resource &env filename)))
 ```
 
 ## Gotchas

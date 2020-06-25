@@ -40,3 +40,4 @@
           (spit template-file)))))
 
 (def read-po-file #'po/read-po-file)
+(def read-po-str #'po/read-po-str)
