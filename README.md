@@ -19,13 +19,13 @@ There are some libraries in the wild that do some parts of what Pottery tries to
 
 Add this dependency to your project:
 
-``` clojure
+```clojure
 [brightin/pottery "0.0.1"]
 ```
 
 And require it:
 
-``` clojure
+```clojure
 (require '[pottery.core :as pottery])
 ```
 
@@ -35,8 +35,7 @@ And require it:
 
 This library is only meant to generate and read PO files. Translating in and of itself is up to you. There are plenty of great libraries out there for this with which Pottery has no intention to compete. There is a [full example](https://github.com/brightin/pottery/tree/master/examples/simple/example.clj) to demonstrate how this could work.
 
-
-``` clojure
+```clojure
 (defn tr [s & args]
   (translate-string-to-current-language s args))
 ```
@@ -47,7 +46,7 @@ Throughout your code this `tr` function will be used, and now Pottery will manag
 
 Call the scan function from the REPL:
 
-``` clojure
+```clojure
 (pottery/scan-codebase!)
 ```
 
@@ -65,7 +64,7 @@ For every string in the codebase there needs to be a translation to other langua
 
 Pottery parses the translation files from step 2 into a dictionary with the form: `{"Original String" "Translated string"}`.
 
-``` clojure
+```clojure
 (pottery/read-po-file (io/resource "gettext/es.po"))
 => {"Hello" "Hola"}
 ```
@@ -74,7 +73,7 @@ These can act as dictionaries for your translation function in step 0.
 
 ### 4. Repeat!
 
-Whenever strings change in the codebase, re-scan at will as in step 1. This will replace the old template file, ensuring changed strings are changed, and removed strings are removed. Next merge that new template file in the translation files. In Poedit you can achieve this by going to *Catalog -> Update from POT file*. After saving in Poedit you can also purge deleted strings from the po file via *Catalog -> Purge Deleted Translations*. You translation files are now in sync!
+Whenever strings change in the codebase, re-scan at will as in step 1. This will replace the old template file, ensuring changed strings are changed, and removed strings are removed. Next merge that new template file in the translation files. In Poedit you can achieve this by going to _Catalog -> Update from POT file_. After saving in Poedit you can also purge deleted strings from the po file via _Catalog -> Purge Deleted Translations_. You translation files are now in sync!
 
 ## Gettext features
 
@@ -84,13 +83,13 @@ This library supports most features that gettext supports. More will be added at
 
 In your code:
 
-``` clojure
+```clojure
 (tr "Hello %s" name)
 ```
 
 The output after parsing a PO file:
 
-``` clojure
+```clojure
 {"Hello %s" "Hoi %s")
 ```
 
@@ -98,13 +97,13 @@ The output after parsing a PO file:
 
 In your code:
 
-``` clojure
+```clojure
 (trn ["One horse" "%s horses"] horse-count)
 ```
 
 The output after parsing a PO file:
 
-``` clojure
+```clojure
 {["One horse" "%s horses"] ["Een paard" "%s paarden"]}
 ```
 
@@ -118,7 +117,7 @@ Sometimes the same string can have multiple translations according to context. G
 
 Translator notes are great to provide context for the string to be translated. Since we defer development time and translation time, there might be confusion due to the lack of context. You can add notes to strings as metadata:
 
-``` clojure
+```clojure
 ^{:notes "Abbreviation of horsepower, not healthpoints"}
 (tr "Hp")
 ```
@@ -134,7 +133,7 @@ These translations will be extracted and added to the template file. At translat
 The scan function takes a few options:
 
 | Key            | Description                                                                  | Default                            |
-|:---------------|:-----------------------------------------------------------------------------|------------------------------------|
+| :------------- | :--------------------------------------------------------------------------- | ---------------------------------- |
 | :dir           | The source directory which needs to be scanned                               | `"src"`                            |
 | :template-file | The output template file                                                     | `"resources/gettext/template.pot"` |
 | :extract-fn    | The function which maps any expression found to a string, strings or nothing | `pottery.scan/default-extractor`   |
@@ -145,7 +144,7 @@ A function which takes a clojure expression as data, and returns a string (singl
 
 A simple extractor would look like this:
 
-``` clojure
+```clojure
 (defn my-extract-fn [expr]
   (when (and (list? expr)
              (= 'tr (first expr))
@@ -158,7 +157,7 @@ A simple extractor would look like this:
 
 It may get tedious to write a good function when you have multiple translation functions that have multiple arities. Pottery offers a shorthand using [core.match](https://github.com/clojure/core.match) to declare patterns in which translation functions are called.
 
-``` clojure
+```clojure
 (pottery/make-extractor
   ['tr (s :guard string?) & _] s
   ['tr [s & _]] s
@@ -168,7 +167,7 @@ It may get tedious to write a good function when you have multiple translation f
 
 It's a good idea to also warn when extraction did not pass any of the patterns, as a safe guard. As last pattern of the match sequence, you can provide:
 
-``` clojure
+```clojure
 (pottery/make-extractor
   ... patterns
   [(:or 'tr 'trn) & _] (pottery.scan/extraction-warning
@@ -179,7 +178,7 @@ When the expression starts with the familiar function call, but did not match an
 
 The default extractor is defined as such:
 
-``` clojure
+```clojure
 (make-extractor
    ['tr (s :guard string?) & _] s
    ['trn [(s1 :guard string?) (s2 :guard string?) & _] _] [s1 s2]
@@ -189,7 +188,7 @@ The default extractor is defined as such:
 
 It's a minimal extractor, which will match these clojure forms:
 
-``` clojure
+```clojure
 (tr "My string" & args)                  => "My string"
 (trn ["Singular" "Plural" & args] count) => ["Singular" "Plural"]
 (tr some-var)                            => nil ;; And a warning is printed
@@ -202,7 +201,7 @@ See [the full example](https://github.com/brightin/pottery/tree/master/examples/
 
 With Pottery, translation is done as a function but the function call should be regarded as data. The scanner reads source code with the clojure reader to figure out which strings are to be translated. For example:
 
-``` clojure
+```clojure
 ;; Bad
 (let [msg (if available? "Available" "Unavailable")]
   (tr msg))
