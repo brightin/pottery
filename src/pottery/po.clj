@@ -1,5 +1,6 @@
 (ns pottery.po
-  (:require [clojure.string :as str]
+  (:require [clojure.pprint :refer [cl-format]]
+            [clojure.string :as str]
             [pottery.scan :as scan]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -29,6 +30,12 @@
   (zipmap (map ::scan/value (mapcat ::scan/expressions scan-results))
           (range)))
 
+(defn- fmt-msg-id [s]
+  (let [lines (str/split s #"\n")]
+    (if (< 1 (count lines))
+      (cl-format nil "\"\"\n\"~{~a~^\\n\"\n\"~}\"" lines)
+      (cl-format nil "\"~a\"" s))))
+
 (defn gen-template
   "Takes in a list of scan results (filename + msg-ids), groups
   multiple appearances of the same msgid together and returns a ready
@@ -41,9 +48,9 @@
      (str
       (format-notes notes)
       (if (vector? msg-id)
-        (format "#: %s\nmsgid \"%s\"\nmsgid_plural \"%s\"\nmsgstr[0] \"\"\nmsgstr[1] \"\"\n"
-                (str/join " " filenames) (first msg-id) (second msg-id))
-        (format "#: %s\nmsgid \"%s\"\nmsgstr \"\"\n" (str/join " " filenames) msg-id))))))
+        (format "#: %s\nmsgid %s\nmsgid_plural %s\nmsgstr[0] \"\"\nmsgstr[1] \"\"\n"
+                (str/join " " filenames) (fmt-msg-id (first msg-id)) (fmt-msg-id (second msg-id)))
+        (format "#: %s\nmsgid %s\nmsgstr \"\"\n" (str/join " " filenames) (fmt-msg-id msg-id)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Reading PO files
