@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## [0.0.4]
+
+### Changed
+
+- Added default-data-reader-fn binding to read-string so it can handle unknown tags
+
 ## [0.0.3]
 
 ### Added
