@@ -16,9 +16,9 @@
 
 (defn- read-file [file]
   {::filename (io/as-relative-path file)
-   ::expressions
-   (read-string {:read-cond :preserve}
-                (format "(%s)" (str/replace (slurp file) #"::" ":")))})
+   ::expressions (binding [*default-data-reader-fn* (fn [_ value] value)]
+                   (read-string {:read-cond :preserve}
+                                (format "(%s)" (str/replace (slurp file) #"::" ":"))))})
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Extraction
