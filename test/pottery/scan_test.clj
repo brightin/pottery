@@ -7,6 +7,8 @@
     (are [expr result] (= result (::sut/value (sut/extract sut/default-extractor expr)))
       '(tr "Hello") "Hello"
       '(tr "Hello %s" arg1) "Hello %s"
+      '(tr "Hello\nthere") "Hello\nthere"
+      '(tr "Hello:\n%s" arg1) "Hello:\n%s"
       '(trn ["One" "Many"] 1) ["One" "Many"]
       '(trn ["One %s" "Many %s" arg1] 3) ["One %s" "Many %s"])
 
@@ -26,7 +28,9 @@
       (are [expr result] (= result (::sut/value (extract expr)))
         '(tr ["Hello"])               "Hello"
         '(tr ["Hello %1!" arg1 arg2]) "Hello %1!"
+        '(tr ["Hello\n%1" arg1 arg2]) "Hello\n%1"
         '(trn ["Item" "Items"] 2)     ["Item" "Items"]
+        '(trn ["It\nem" "It\nems"] 2) ["It\nem" "It\nems"]
         '(inc 6)                      nil
         "foo"                         nil)
 
