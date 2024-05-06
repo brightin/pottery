@@ -14,26 +14,32 @@
 (defn- get-files [dir]
   (filter source-file? (file-seq (io/file dir))))
 
-(defn- parse-string-all [s]
-  (e/parse-string-all s
-                      {:all true
-                       :syntax-quote {:resolve-symbol symbol}
-                       :readers *data-readers*
-                       :read-cond :allow
-                       :regex #(list `re-pattern %)
-                       :features #{:clj}
-                       :end-location false
-                       :row-key :line
-                       :col-key :column
-                       :auto-resolve symbol}))
+(defn- parse-string-all [s opts]
+  (let [features (:features opts)]
+    (distinct
+     (mapcat
+              (fn [feature]
+                (e/parse-string-all s
+                                    (merge {:all true
+                                            :syntax-quote {:resolve-symbol symbol}
+                                            :readers *data-readers*
+                                            :read-cond :allow
+                                            :regex #(list `re-pattern %)
+                                            :features #{feature}
+                                            :end-location false
+                                            :row-key :line
+                                            :col-key :column
+                                            :auto-resolve symbol}
+                                           opts)))
+              features))))
 
-(defn- read-file [file]
+(defn- read-file [file opts]
   {::filename (io/as-relative-path file)
    ::expressions
-   (parse-string-all (slurp file))})
+   (parse-string-all (slurp file) opts)})
 
 (comment
-  (parse-string-all "(dude '(tr \"dude\"))")
+  (parse-string-all "(dude '(tr \"dude\"))" {:features #{:clj :cljs}})
  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -89,7 +95,7 @@
   "Walk the given directory and for every clj, cljc or cljs file
   extract the strings for which the extractor returns a value. "
   [{:keys [dir extract-fn features]
-    :or {features #{:clj :cljs}}}]
+    :or {features #{:cljs}}}]
   (println "Scanning files...")
   (->>
    (get-files (java.io.File. dir))
