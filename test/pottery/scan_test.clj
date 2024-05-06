@@ -60,7 +60,8 @@
 (deftest scan-files-test
   (is (= '(#:pottery.scan{:filename "test-resources/foo.cljc",
                           :expressions
-                          (#:pottery.scan{:value "Clojure text %1 %2 %3"}
+                          (#:pottery.scan{:value "Both Clojure and ClojureScript"}
+                           #:pottery.scan{:value "Clojure text %1 %2 %3"}
                            #:pottery.scan{:value "ClojureScript text %1 %2 %3"})})
          (sut/scan-files {:dir "test-resources"
                           :extract-fn sut/default-extractor}))))
