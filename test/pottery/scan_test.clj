@@ -58,7 +58,7 @@
                                  [:div (tr "Some text %1" some-arg)]))}))))
 
 (deftest scan-files-test
-  (is (= '(#:pottery.scan{:filename "test-resources/foo.cljc",
-                          :expressions (#:pottery.scan{:value "Some text %1 %2 %3"})})
+  (is (= '({:pottery.scan/filename "test-resources/foo.cljc"
+            :pottery.scan/expressions ({:pottery.scan/value "Some text %1 %2 %3"})})
          (sut/scan-files {:dir "test-resources"
                           :extract-fn sut/default-extractor}))))
