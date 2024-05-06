@@ -1,7 +1,8 @@
 (ns pottery.scan
   (:require [pottery.utils :refer [vectorize]]
             [clojure.core.match :refer [match]]
-            [clojure.java.io :as io]))
+            [clojure.java.io :as io]
+            [edamame.core :as e]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Files
@@ -13,16 +14,27 @@
 (defn- get-files [dir]
   (filter source-file? (file-seq (io/file dir))))
 
+(defn- parse-string-all [s]
+  (e/parse-string-all s
+                      {:all true
+                       :syntax-quote {:resolve-symbol symbol}
+                       :readers *data-readers*
+                       :read-cond :allow
+                       :regex #(list `re-pattern %)
+                       :features #{:clj}
+                       :end-location false
+                       :row-key :line
+                       :col-key :column
+                       :auto-resolve symbol}))
+
 (defn- read-file [file]
   {::filename (io/as-relative-path file)
-   ::expressions (binding [*default-data-reader-fn* (fn [_ value] value)
-                           *reader-resolver* (reify clojure.lang.LispReader$Resolver
-                                               (currentNS [_] 'ignored)
-                                               (resolveClass [_ _sym] 'ignored)
-                                               (resolveAlias [_ sym] sym)
-                                               (resolveVar [_ _sym] 'ignored))]
-                   (read-string {:read-cond :preserve}
-                                (format "(%s)" (slurp file))))})
+   ::expressions
+   (parse-string-all (slurp file))})
+
+(comment
+  (parse-string-all "(dude '(tr \"dude\"))")
+ )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Extraction
@@ -76,11 +88,12 @@
 (defn scan-files
   "Walk the given directory and for every clj, cljc or cljs file
   extract the strings for which the extractor returns a value. "
-  [{:keys [dir extract-fn]}]
+  [{:keys [dir extract-fn features]
+    :or {features #{:clj :cljs}}}]
   (println "Scanning files...")
   (->>
    (get-files (java.io.File. dir))
-   (map read-file)
+   (map #(read-file % {:features features}))
    (map (partial find-tr-strings extract-fn))
    (filter (comp seq ::expressions))
    (sort-by ::filename)))
