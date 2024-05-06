@@ -30,17 +30,13 @@
                                             :row-key :line
                                             :col-key :column
                                             :auto-resolve symbol}
-                                           opts)))
+                                           (dissoc opts :features))))
               features))))
 
 (defn- read-file [file opts]
   {::filename (io/as-relative-path file)
    ::expressions
    (parse-string-all (slurp file) opts)})
-
-(comment
-  (parse-string-all "(dude '(tr \"dude\"))" {:features #{:clj :cljs}})
- )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Extraction
@@ -95,7 +91,7 @@
   "Walk the given directory and for every clj, cljc or cljs file
   extract the strings for which the extractor returns a value. "
   [{:keys [dir extract-fn features]
-    :or {features #{:cljs}}}]
+    :or {features #{:clj :cljs}}}]
   (println "Scanning files...")
   (->>
    (get-files (java.io.File. dir))
@@ -103,3 +99,11 @@
    (map (partial find-tr-strings extract-fn))
    (filter (comp seq ::expressions))
    (sort-by ::filename)))
+
+;;;; Scratch
+
+(comment
+  (scan-files {:dir "test-resources"
+               :extract-fn default-extractor})
+
+  )
