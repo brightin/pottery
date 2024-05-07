@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file. This change
 ## [Unreleased]
 
 - Bugfix: parse keys destructuring with auto-aliasing
+- Bugfix: some expressions in `.cljc` go undetected
 
 ## [0.0.5]
 
