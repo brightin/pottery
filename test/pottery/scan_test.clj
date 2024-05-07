@@ -2,6 +2,8 @@
   (:require [pottery.scan :as sut]
             [clojure.test :refer [deftest testing is are]]))
 
+(set! *print-namespace-maps* false)
+
 (deftest extract-test
   (testing "Default extractor"
     (are [expr result] (= result (::sut/value (sut/extract sut/default-extractor expr)))
@@ -58,10 +60,10 @@
                                  [:div (tr "Some text %1" some-arg)]))}))))
 
 (deftest scan-files-test
-  (is (= '(#:pottery.scan{:filename "test-resources/foo.cljc",
-                          :expressions
-                          (#:pottery.scan{:value "Both Clojure and ClojureScript"}
-                           #:pottery.scan{:value "Clojure text %1 %2 %3"}
-                           #:pottery.scan{:value "ClojureScript text %1 %2 %3"})})
+  (is (= '({::sut/filename "test-resources/foo.cljc",
+            ::sut/expressions
+            ({::sut/value "Both Clojure and ClojureScript"}
+             {::sut/value "Clojure text %1 %2 %3"}
+             {::sut/value "ClojureScript text %1 %2 %3 %4"})})
          (sut/scan-files {:dir "test-resources"
                           :extract-fn sut/default-extractor}))))

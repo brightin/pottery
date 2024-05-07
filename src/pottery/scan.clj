@@ -77,11 +77,13 @@
 
     `(trn i18n [\"One item\" \"%1 items\"] n)` or
     `(trn [\"One item\" \"%1 items\"] n)`"
-  [file extract-fn expr]
-  (when-let [val (and (seq? expr) (extract-fn expr))]
-    (if-let [warning (::warning val)]
-      (println warning expr (str file) (meta expr))
-      (with-comment expr val))))
+  ([extract-fn expr]
+   (extract nil extract-fn expr))
+  ([file extract-fn expr]
+   (when-let [val (and (seq? expr) (extract-fn expr))]
+     (if-let [warning (::warning val)]
+       (println warning expr (str file) (meta expr))
+       (with-comment expr val)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Scanning
@@ -92,7 +94,7 @@
        distinct))
 
 (defn find-tr-strings
-  [expr-by-file extract-fn]
+  [extract-fn expr-by-file]
   (update expr-by-file ::expressions #(find-tr-strings* (::filename expr-by-file) extract-fn %)))
 
 (defn scan-files
@@ -104,7 +106,7 @@
   (->>
    (get-files (java.io.File. dir))
    (map #(read-file % {:features features}))
-   (map #(find-tr-strings % extract-fn))
+   (map #(find-tr-strings extract-fn %))
    (filter (comp seq ::expressions))
    (sort-by ::filename)))
 
