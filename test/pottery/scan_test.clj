@@ -56,3 +56,9 @@
                                (defn square [x] x)
                                (defn render-thing [{:keys [some-arg]}]
                                  [:div (tr "Some text %1" some-arg)]))}))))
+
+(deftest scan-files-test
+  (is (= '({::sut/filename "test-resources/foo.cljc"
+            ::sut/expressions ({::sut/value "Some text %1 %2 %3"})})
+         (sut/scan-files {:dir "test-resources"
+                          :extract-fn sut/default-extractor}))))

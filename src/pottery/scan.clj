@@ -1,8 +1,7 @@
 (ns pottery.scan
   (:require [pottery.utils :refer [vectorize]]
             [clojure.core.match :refer [match]]
-            [clojure.java.io :as io]
-            [clojure.string :as str]))
+            [clojure.java.io :as io]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Files
@@ -16,9 +15,14 @@
 
 (defn- read-file [file]
   {::filename (io/as-relative-path file)
-   ::expressions (binding [*default-data-reader-fn* (fn [_ value] value)]
+   ::expressions (binding [*default-data-reader-fn* (fn [_ value] value)
+                           *reader-resolver* (reify clojure.lang.LispReader$Resolver
+                                               (currentNS [_] 'ignored)
+                                               (resolveClass [_ _sym] 'ignored)
+                                               (resolveAlias [_ sym] sym)
+                                               (resolveVar [_ _sym] 'ignored))]
                    (read-string {:read-cond :preserve}
-                                (format "(%s)" (str/replace (slurp file) #"::" ":"))))})
+                                (format "(%s)" (slurp file))))})
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Extraction
