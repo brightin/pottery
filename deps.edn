@@ -1,2 +1,3 @@
-{:deps {org.clojure/core.match {:mvn/version "1.0.0"}}
+{:deps {org.clojure/core.match {:mvn/version "1.0.0"}
+        borkdude/edamame {:mvn/version "1.4.24"}}
  :aliases {:test {:extra-paths ["test-resources"]}}}
