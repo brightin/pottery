@@ -2,7 +2,8 @@
   (:require [pottery.utils :refer [vectorize]]
             [clojure.core.match :refer [match]]
             [clojure.java.io :as io]
-            [edamame.core :as e])
+            [edamame.core :as e]
+            [clojure.string :as str])
   (:refer-clojure :exclude [*file*]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -15,8 +16,10 @@
 (defn- get-files [dir]
   (filter source-file? (file-seq (io/file dir))))
 
-(defn- parse-string-all [s opts]
-  (let [features (:features opts)]
+(defn- parse-string-all [s ext opts]
+  (let [features (if (= :cljc ext)
+                   (:features opts)
+                   #{ext})]
     (distinct
      (mapcat
               (fn [feature]
@@ -39,10 +42,17 @@
                                            (dissoc opts :features))))
               features))))
 
+(defn extension [file]
+  (some->
+   (str file)
+   (str/split #"\.")
+   last
+   keyword))
+
 (defn- read-file [file opts]
   {::filename (io/as-relative-path file)
    ::expressions
-   (doall (parse-string-all (slurp file) opts))})
+   (doall (parse-string-all (slurp file) (extension file) opts))})
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Extraction
