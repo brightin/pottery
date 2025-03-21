@@ -262,7 +262,7 @@ Thanks to [Carlo Sciolla](https://github.com/skuro) for coming up with the name 
 
 ## License
 
-Copyright © 2024 Brightin
+Copyright © 2025 Brightin
 
 This project uses the [Hippocratic License](https://firstdonoharm.dev/), and is
 thus freely available to use for purposes that do not infringe on the United

@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## [1.0.1]
+
+- Bugfix: Avoid slurping directories. https://github.com/brightin/pottery/pull/10
+
 ## [1.0.0]
 
 - Bugfix: parse keys destructuring with auto-aliasing

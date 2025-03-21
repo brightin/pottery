@@ -1,4 +1,4 @@
-(defproject brightin/pottery "1.0.0"
+(defproject brightin/pottery "1.0.1"
   :description "A clojure library to interact with gettext and PO/POT files"
   :url "https://www.github.com/brightin/pottery"
   :license {:name "Hippocratic License"
