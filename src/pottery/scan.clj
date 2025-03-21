@@ -10,8 +10,9 @@
 ;; Files
 
 (defn- source-file? [file]
-  (some #(re-find (re-pattern (str "." % "$")) (.getName file))
-        ["clj" "cljc" "cljs"]))
+  (and (.isFile file)
+       (some #(re-find (re-pattern (str "." % "$")) (.getName file))
+             ["clj" "cljc" "cljs"])))
 
 (defn- get-files [dir]
   (filter source-file? (file-seq (io/file dir))))
