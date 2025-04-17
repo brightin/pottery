@@ -29,6 +29,13 @@
                               {::scan/filename "bar.cljs"
                                ::scan/expressions [{::scan/value "Hello %s!"}]}]))))
 
+  (testing "Escape double-quotes in msgids"
+    (is (= (str "#: foo.cljs\n"
+                "msgid \"Hello \\\"%s\\\"!\"\n"
+                "msgstr \"\"\n")
+           (sut/gen-template [{::scan/filename "foo.cljs"
+                               ::scan/expressions [{::scan/value "Hello \"%s\"!"}]}]))))
+
   (testing "Outputting translator notes"
     (is (= (str "#. note 1\n"
                 "#. note 2\n"

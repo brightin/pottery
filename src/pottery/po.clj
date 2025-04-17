@@ -1,6 +1,5 @@
 (ns pottery.po
-  (:require [clojure.pprint :refer [cl-format]]
-            [clojure.string :as str]
+  (:require [clojure.string :as str]
             [pottery.scan :as scan]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -31,10 +30,14 @@
           (range)))
 
 (defn- fmt-msg-id [s]
-  (let [lines (str/split s #"\n")]
-    (if (< 1 (count lines))
-      (cl-format nil "\"\"\n\"~{~a~^\\n\"\n\"~}\"" lines)
-      (cl-format nil "\"~a\"" s))))
+  (let [lines (str/split-lines s)
+        q #(str \" (str/escape % {\" "\\\""}) \")]
+    (if (next lines)
+      (->> (concat [(q "")]
+                   (map #(q (str % "\\n")) (butlast lines))
+                   [(q (last lines))])
+           (str/join "\n"))
+      (q s))))
 
 (defn gen-template
   "Takes in a list of scan results (filename + msg-ids), groups
