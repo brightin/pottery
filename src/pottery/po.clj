@@ -19,7 +19,7 @@
 
 (defn- format-notes [notes]
   (when (seq notes)
-    (str (str/join "\n" (map #(str "#. " %) notes)) "\n")))
+    (str (str/join "\n" (mapcat (fn [note] (map #(str "#. " %) (str/split-lines note))) notes)) "\n")))
 
 (defn- create-sort-index
   "Creates a map from every scanned value to an occurence

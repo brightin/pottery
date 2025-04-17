@@ -59,7 +59,18 @@
                                                     ::scan/notes ["note 1" "note 2"]}]}
                               {::scan/filename "file2.cljs"
                                ::scan/expressions [{::scan/value "id"
-                                                    ::scan/notes ["note 3" "note 4"]}]}])))))
+                                                    ::scan/notes ["note 3" "note 4"]}]}]))))
+
+  (testing "Notes with newlines"
+    (is (= (str "#. note 1\n"
+                "#. note 2\n"
+                "#. second line\n"
+                "#: file.cljs\n"
+                "msgid \"id\"\n"
+                "msgstr \"\"\n")
+           (sut/gen-template [{::scan/filename "file.cljs"
+                               ::scan/expressions [{::scan/value "id"
+                                                    ::scan/notes ["note 1" "note 2\nsecond line"]}]}])))))
 
 (defn read-fixture [name]
   (slurp (io/file "test/pottery/_fixtures/" name)))
