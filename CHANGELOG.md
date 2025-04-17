@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## [1.0.2]
+
+- Bugfix: Handle multiline notes correctly in .pot file
+- Bugfix: Escape double quotes in msgid entries
+
 ## [1.0.1]
 
 - Bugfix: Avoid slurping directories. https://github.com/brightin/pottery/pull/10
